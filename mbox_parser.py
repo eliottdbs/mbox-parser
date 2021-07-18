@@ -55,7 +55,7 @@ def getSubject(mail):
         subject = make_header(decode_header(subject))
     except:
         subject = ''
-    return re.sub('(\W+)', '-', str(subject)) or 'no-subject'
+    return re.sub('(\W+)', '-', str(subject)).strip('-') or 'no-subject'
 
 
 #--------------------------#
@@ -82,6 +82,9 @@ for mbox_file in mbox_files:
             for mail in mails:
                 mail = mail.strip('\n')
                 name = path_to_write + mbox_file[:-5] + '/' + getDate(mail) + '_' + getSubject(mail) + '.eml'
+                # Test if a mail already exist at this date with this subject
+                if os.path.isfile(name):
+                    name = name[:-4] + '-' + str(counter) + '.eml'
                 print(name)
                 # Write an EML file with
                 with open(name, 'w') as message:
